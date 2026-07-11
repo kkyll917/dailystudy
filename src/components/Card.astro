@@ -1,0 +1,66 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate } from "../lib/utils";
+
+export interface Props {
+  entry: CollectionEntry<"blog" | "notes" | "algorithms">;
+  type: "blog" | "notes" | "algorithms";
+  href: string;
+}
+
+const { entry, type, href } = Astro.props;
+const { title, description, date } = entry.data;
+
+const colors = {
+  blog: {
+    accent: "border-blue-500",
+    badge: "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300",
+    label: "博客",
+  },
+  notes: {
+    accent: "border-green-500",
+    badge: "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300",
+    label: "学习笔记",
+  },
+  algorithms: {
+    accent: "border-orange-500",
+    badge: "bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300",
+    label: "算法",
+  },
+}[type];
+---
+
+<a
+  href={href}
+  class={`block p-6 rounded-xl border border-gray-200 dark:border-gray-700 border-l-4 ${colors.accent} bg-white dark:bg-gray-800 card-hover`}
+>
+  <div class="flex items-center gap-2 mb-3">
+    <span class={`px-2 py-0.5 text-xs rounded-full ${colors.badge}`}>
+      {colors.label}
+    </span>
+    <time class="text-xs text-gray-400">{formatDate(date)}</time>
+  </div>
+  <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+    {title}
+  </h3>
+  {description && (
+    <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+      {description}
+    </p>
+  )}
+  {
+    type === "algorithms" && "difficulty" in entry.data && (
+      <div class="mt-3">
+        <span class={`text-xs px-2 py-0.5 rounded ${
+          entry.data.difficulty === "easy"
+            ? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300"
+            : entry.data.difficulty === "medium"
+            ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300"
+            : "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300"
+        }`}>
+          {entry.data.difficulty}
+        </span>
+      </div>
+    )
+  }
+</a>

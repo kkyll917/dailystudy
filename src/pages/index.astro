@@ -1,0 +1,140 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Card from "../components/Card.astro";
+import { getCollection } from "astro:content";
+
+// 获取各类最新内容
+const latestBlogs = (await getCollection("blog"))
+  .filter((b) => !b.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const latestNotes = (await getCollection("notes"))
+  .filter((n) => !n.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const latestAlgorithms = (await getCollection("algorithms"))
+  .filter((a) => !a.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout title="首页" description="个人学习笔记、算法笔记与博客">
+  <!-- Hero -->
+  <section class="max-w-5xl mx-auto px-4 py-20 sm:py-28 text-center">
+    <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+      记录学习，分享思考
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+      这里是我的个人知识库，存放博客文章、学习笔记和算法题解。
+    </p>
+    <div class="flex items-center justify-center gap-4 mt-8">
+      <a
+        href="/blog"
+        class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+      >
+        阅读博客
+      </a>
+      <a
+        href="/notes"
+        class="px-6 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+      >
+        查看笔记
+      </a>
+    </div>
+  </section>
+
+  <!-- 最新博客 -->
+  {
+    latestBlogs.length > 0 && (
+      <section class="max-w-5xl mx-auto px-4 pb-16">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">最新博客</h2>
+          <a
+            href="/blog"
+            class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            查看全部 →
+          </a>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {latestBlogs.map((b) => (
+            <Card entry={b} type="blog" href={`/blog/${b.slug}`} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- 最新笔记 -->
+  {
+    latestNotes.length > 0 && (
+      <section class="max-w-5xl mx-auto px-4 pb-16">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">最新学习笔记</h2>
+          <a
+            href="/notes"
+            class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            查看全部 →
+          </a>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {latestNotes.map((n) => (
+            <Card entry={n} type="notes" href={`/notes/${n.slug}`} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- 最新算法 -->
+  {
+    latestAlgorithms.length > 0 && (
+      <section class="max-w-5xl mx-auto px-4 pb-16">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">最新算法笔记</h2>
+          <a
+            href="/algorithms"
+            class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            查看全部 →
+          </a>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {latestAlgorithms.map((a) => (
+            <Card entry={a} type="algorithms" href={`/algorithms/${a.slug}`} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- 空状态 -->
+  {
+    latestBlogs.length === 0 && latestNotes.length === 0 && latestAlgorithms.length === 0 && (
+      <section class="max-w-5xl mx-auto px-4 pb-16 text-center">
+        <div class="py-16 text-gray-400 dark:text-gray-500">
+          <svg
+            class="w-16 h-16 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            />
+          </svg>
+          <p class="text-lg">还没有内容，开始写第一篇吧！</p>
+          <p class="text-sm mt-2">
+            在 <code class="text-blue-500">src/content/</code> 目录下创建 Markdown 文件即可。
+          </p>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

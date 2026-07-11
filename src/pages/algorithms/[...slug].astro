@@ -1,0 +1,21 @@
+---
+import { getCollection } from "astro:content";
+import BlogLayout from "../../layouts/BlogLayout.astro";
+
+export async function getStaticPaths() {
+  const algorithms = await getCollection("algorithms");
+  return algorithms
+    .filter((a) => !a.data.draft)
+    .map((a) => ({
+      params: { slug: a.slug },
+      props: { entry: a },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BlogLayout entry={entry} type="algorithms">
+  <Content />
+</BlogLayout>

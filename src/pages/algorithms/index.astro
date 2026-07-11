@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Card from "../../components/Card.astro";
+import { getCollection } from "astro:content";
+
+const allAlgorithms = (await getCollection("algorithms"))
+  .filter((a) => !a.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const categoryLabels: Record<string, string> = {
+  sort: "排序",
+  search: "搜索",
+  dp: "动态规划",
+  graph: "图论",
+  tree: "树",
+  string: "字符串",
+  math: "数学",
+  other: "其他",
+};
+
+const categories = [...new Set(allAlgorithms.map((a) => a.data.category))];
+---
+
+<BaseLayout title="算法笔记" description="算法题解与笔记">
+  <section class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+      算法笔记
+    </h1>
+    <p class="text-gray-500 dark:text-gray-400 mb-10">
+      共 {allAlgorithms.length} 篇题解
+    </p>
+
+    {allAlgorithms.length > 0 ? (
+      categories.map((cat) => {
+        const catAlgos = allAlgorithms.filter((a) => a.data.category === cat);
+        return (
+          <section class="mb-12">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+              {categoryLabels[cat] || cat}
+            </h2>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {catAlgos.map((a) => (
+                <Card entry={a} type="algorithms" href={`/algorithms/${a.slug}`} />
+              ))}
+            </div>
+          </section>
+        );
+      })
+    ) : (
+      <div class="py-20 text-center text-gray-400">
+        <p>还没有算法笔记，来刷第一道题吧！</p>
+      </div>
+    )}
+  </section>
+</BaseLayout>
