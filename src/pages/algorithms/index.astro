@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Card from "../../components/Card.astro";
 import { getCollection } from "astro:content";
+import { BASE } from "../../lib/site";
 
 const allAlgorithms = (await getCollection("algorithms"))
   .filter((a) => !a.data.draft)
@@ -41,7 +42,7 @@ const categories = [...new Set(allAlgorithms.map((a) => a.data.category))];
             </h2>
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {catAlgos.map((a) => (
-                <Card entry={a} type="algorithms" href={`/algorithms/${a.slug}`} />
+                <Card entry={a} type="algorithms" href={`${BASE}/algorithms/${a.slug}`} />
               ))}
             </div>
           </section>

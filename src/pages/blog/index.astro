@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Card from "../../components/Card.astro";
 import { getCollection } from "astro:content";
+import { BASE } from "../../lib/site";
 
 const allBlogs = (await getCollection("blog"))
   .filter((b) => !b.data.draft)
@@ -20,7 +21,7 @@ const allBlogs = (await getCollection("blog"))
     {allBlogs.length > 0 ? (
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {allBlogs.map((b) => (
-          <Card entry={b} type="blog" href={`/blog/${b.slug}`} />
+          <Card entry={b} type="blog" href={`${BASE}/blog/${b.slug}`} />
         ))}
       </div>
     ) : (

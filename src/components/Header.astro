@@ -1,9 +1,11 @@
 ---
+import { BASE } from "../lib/site";
+
 const navItems = [
-  { label: "首页", path: "/" },
-  { label: "博客", path: "/blog" },
-  { label: "学习笔记", path: "/notes" },
-  { label: "算法", path: "/algorithms" },
+  { label: "首页", path: `${BASE}/` },
+  { label: "博客", path: `${BASE}/blog` },
+  { label: "学习笔记", path: `${BASE}/notes` },
+  { label: "算法", path: `${BASE}/algorithms` },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -13,7 +15,7 @@ const currentPath = Astro.url.pathname;
   <nav class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
     <!-- Logo -->
     <a
-      href="/"
+      href={`${BASE}/`}
       class="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
     >
       MyWeb
@@ -23,7 +25,7 @@ const currentPath = Astro.url.pathname;
     <div class="flex items-center gap-1">
       {navItems.map((item) => {
         const isActive = currentPath === item.path ||
-          (item.path !== "/" && currentPath.startsWith(item.path));
+          (item.path !== `${BASE}/` && currentPath.startsWith(item.path));
         return (
           <a
             href={item.path}

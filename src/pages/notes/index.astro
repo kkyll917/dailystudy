@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Card from "../../components/Card.astro";
 import { getCollection } from "astro:content";
+import { BASE } from "../../lib/site";
 
 const allNotes = (await getCollection("notes"))
   .filter((n) => !n.data.draft)
@@ -31,7 +32,7 @@ const topics = [...new Set(allNotes.map((n) => n.data.topic))];
             </h2>
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {topicNotes.map((n) => (
-                <Card entry={n} type="notes" href={`/notes/${n.slug}`} />
+                <Card entry={n} type="notes" href={`${BASE}/notes/${n.slug}`} />
               ))}
             </div>
           </section>
