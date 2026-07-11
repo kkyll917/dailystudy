@@ -10,5 +10,6 @@ export default defineConfig({
       wrap: true,
     },
   },
-  site: "https://my-web.vercel.app",
+  site: "https://kkyll917.github.io",
+  base: "/dailystudy",
 });
