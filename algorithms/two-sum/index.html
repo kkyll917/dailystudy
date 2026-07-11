@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="经典哈希表入门题，详细讲解 Two Sum 的多种解法。"><link rel="icon" type="image/svg+xml" href="/dailystudy/favicon.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><title>LeetCode 1. Two Sum —— 两数之和 | MyWeb</title><link rel="stylesheet" href="/dailystudy/_astro/_slug_.BK9BKe3h.css"><script type="module">const t=document.getElementById("themeToggle");t?.addEventListener("click",()=>{document.documentElement.classList.toggle("dark");const e=document.documentElement.classList.contains("dark");localStorage.setItem("theme",e?"dark":"light")});
+</script></head> <body class="min-h-screen flex flex-col"> <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800"> <nav class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between"> <!-- Logo --> <a href="/dailystudy/" class="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+MyWeb
+</a> <!-- 导航链接 --> <div class="flex items-center gap-1"> <a href="/dailystudy/" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"> 首页 </a><a href="/dailystudy/blog" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"> 博客 </a><a href="/dailystudy/notes" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"> 学习笔记 </a><a href="/dailystudy/algorithms" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"> 算法 </a> <!-- 暗色模式按钮 --> <button id="themeToggle" class="ml-2 p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="切换暗色模式"> <span class="block dark:hidden"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> </span> <span class="hidden dark:block"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> </span> </button> </div> </nav> </header>  <main class="flex-1">  <article class="max-w-3xl mx-auto px-4 py-12"> <!-- 面包屑 --> <nav class="text-sm text-gray-500 dark:text-gray-400 mb-8"> <a href="/dailystudy/" class="hover:text-blue-600 dark:hover:text-blue-400">首页</a> <span class="mx-2">/</span> <a href="/dailystudy/algorithms" class="hover:text-blue-600 dark:hover:text-blue-400">算法笔记</a> <span class="mx-2">/</span> <span>LeetCode 1. Two Sum —— 两数之和</span> </nav> <!-- 标题区 --> <header class="mb-8"> <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4"> LeetCode 1. Two Sum —— 两数之和 </h1> <p class="text-lg text-gray-500 dark:text-gray-400 mb-4">经典哈希表入门题，详细讲解 Two Sum 的多种解法。</p> <div class="flex items-center gap-4 text-sm text-gray-400 dark:text-gray-500"> <time datetime="2026-07-09T00:00:00.000Z">2026年7月9日</time>   <span class="px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded"> search </span> <span class="px-2 py-0.5 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded"> easy </span>  </div> <div class="flex flex-wrap gap-2 mt-3"> <span class="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full">
+#hashmap </span><span class="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full">
+#array </span><span class="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full">
+#leetcode </span> </div> </header> <!-- 正文 --> <div class="prose-custom">  <h2 id="题目描述">题目描述</h2>
+<p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出和为目标值的那两个整数，并返回它们的数组下标。</p>
+<ul>
+<li>每种输入只会对应一个答案</li>
+<li>不能使用两次相同的元素</li>
+</ul>
+<h2 id="示例">示例</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>输入: nums = [2, 7, 11, 15], target = 9</span></span>
+<span class="line"><span>输出: [0, 1]</span></span>
+<span class="line"><span>解释: nums[0] + nums[1] == 9</span></span>
+<span class="line"><span></span></span></code></pre>
+<h2 id="解法一暴力枚举">解法一：暴力枚举</h2>
+<p>最直观的思路 —— 枚举所有数对。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> twoSum</span><span style="color:#E1E4E8">(nums: list[</span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">], target: </span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">) -> list[</span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#E1E4E8">    n </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> len</span><span style="color:#E1E4E8">(nums)</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> range</span><span style="color:#E1E4E8">(n):</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> j </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> range</span><span style="color:#E1E4E8">(i </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">, n):</span></span>
+<span class="line"><span style="color:#F97583">            if</span><span style="color:#E1E4E8"> nums[i] </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> nums[j] </span><span style="color:#F97583">==</span><span style="color:#E1E4E8"> target:</span></span>
+<span class="line"><span style="color:#F97583">                return</span><span style="color:#E1E4E8"> [i, j]</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> []</span></span>
+<span class="line"></span></code></pre>
+<p><strong>复杂度分析：</strong></p>
+<ul>
+<li>时间复杂度：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></li>
+<li>空间复杂度：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span></li>
+</ul>
+<h2 id="解法二哈希表最优">解法二：哈希表（最优）</h2>
+<p>遍历数组，用哈希表记录已遍历元素的值和下标。对于当前元素 <code>nums[i]</code>，查找 <code>target - nums[i]</code> 是否在哈希表中。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> twoSum</span><span style="color:#E1E4E8">(nums: list[</span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">], target: </span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">) -> list[</span><span style="color:#79B8FF">int</span><span style="color:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#E1E4E8">    seen </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {}  </span><span style="color:#6A737D"># value -> index</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> i, num </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> enumerate</span><span style="color:#E1E4E8">(nums):</span></span>
+<span class="line"><span style="color:#E1E4E8">        complement </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> target </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> num</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> complement </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> seen:</span></span>
+<span class="line"><span style="color:#F97583">            return</span><span style="color:#E1E4E8"> [seen[complement], i]</span></span>
+<span class="line"><span style="color:#E1E4E8">        seen[num] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> i</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> []</span></span>
+<span class="line"></span></code></pre>
+<p><strong>复杂度分析：</strong></p>
+<ul>
+<li>时间复杂度：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> —— 只需一次遍历</li>
+<li>空间复杂度：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> —— 哈希表存储已遍历元素</li>
+</ul>
+<h2 id="思路总结">思路总结</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>解法</th><th>时间</th><th>空间</th><th>核心思想</th></tr></thead><tbody><tr><td>暴力</td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span></td><td>枚举所有数对</td></tr><tr><td>哈希表</td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0278em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></td><td>空间换时间</td></tr></tbody></table>
+<blockquote>
+<p>经典的空间换时间策略。遇到”查找”类问题，首先想到哈希表往往没错。</p>
+</blockquote>  </div> </article>  </main> <footer class="border-t border-gray-200 dark:border-gray-800 mt-auto"> <div class="max-w-5xl mx-auto px-4 py-8"> <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400"> <p>&copy; 2026 MyWeb — Built with Astro</p> <div class="flex items-center gap-4"> <a href="/dailystudy/blog" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+博客
+</a> <a href="/dailystudy/notes" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+学习笔记
+</a> <a href="/dailystudy/algorithms" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+算法
+</a> </div> </div> </div> </footer> <script>
+      // 暗色模式切换
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.classList.add("dark");
+      }
+    </script> </body> </html>

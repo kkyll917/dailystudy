@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="深入理解 useState、useEffect、useCallback 等核心 Hooks 的工作原理。"><link rel="icon" type="image/svg+xml" href="/dailystudy/favicon.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><title>React Hooks 核心原理笔记 | MyWeb</title><link rel="stylesheet" href="/dailystudy/_astro/_slug_.BK9BKe3h.css"><script type="module">const t=document.getElementById("themeToggle");t?.addEventListener("click",()=>{document.documentElement.classList.toggle("dark");const e=document.documentElement.classList.contains("dark");localStorage.setItem("theme",e?"dark":"light")});
+</script></head> <body class="min-h-screen flex flex-col"> <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800"> <nav class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between"> <!-- Logo --> <a href="/dailystudy/" class="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+MyWeb
+</a> <!-- 导航链接 --> <div class="flex items-center gap-1"> <a href="/dailystudy/" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"> 首页 </a><a href="/dailystudy/blog" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"> 博客 </a><a href="/dailystudy/notes" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"> 学习笔记 </a><a href="/dailystudy/algorithms" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"> 算法 </a> <!-- 暗色模式按钮 --> <button id="themeToggle" class="ml-2 p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="切换暗色模式"> <span class="block dark:hidden"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> </span> <span class="hidden dark:block"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> </span> </button> </div> </nav> </header>  <main class="flex-1">  <article class="max-w-3xl mx-auto px-4 py-12"> <!-- 面包屑 --> <nav class="text-sm text-gray-500 dark:text-gray-400 mb-8"> <a href="/dailystudy/" class="hover:text-blue-600 dark:hover:text-blue-400">首页</a> <span class="mx-2">/</span> <a href="/dailystudy/notes" class="hover:text-blue-600 dark:hover:text-blue-400">学习笔记</a> <span class="mx-2">/</span> <span>React Hooks 核心原理笔记</span> </nav> <!-- 标题区 --> <header class="mb-8"> <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4"> React Hooks 核心原理笔记 </h1> <p class="text-lg text-gray-500 dark:text-gray-400 mb-4">深入理解 useState、useEffect、useCallback 等核心 Hooks 的工作原理。</p> <div class="flex items-center gap-4 text-sm text-gray-400 dark:text-gray-500"> <time datetime="2026-07-10T00:00:00.000Z">2026年7月10日</time> <span class="px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded"> React </span>  </div> <div class="flex flex-wrap gap-2 mt-3"> <span class="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full">
+#react </span><span class="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full">
+#hooks </span><span class="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full">
+#前端 </span> </div> </header> <!-- 正文 --> <div class="prose-custom">  <h2 id="usestate-原理">useState 原理</h2>
+<p><code>useState</code> 是 React 中最基础的 Hook，用于在函数组件中添加状态。</p>
+<h3 id="基本用法">基本用法</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="jsx"><code><span class="line"><span style="color:#F97583">const</span><span style="color:#E1E4E8"> [</span><span style="color:#79B8FF">count</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">setCount</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#B392F0"> useState</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span></code></pre>
+<h3 id="实现原理简化版">实现原理（简化版）</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#F97583">let</span><span style="color:#E1E4E8"> memorizedStates </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [];</span></span>
+<span class="line"><span style="color:#F97583">let</span><span style="color:#E1E4E8"> cursor </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">function</span><span style="color:#B392F0"> useState</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">initialValue</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> currentCursor</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> cursor;</span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#6A737D">  // 首次渲染时初始化</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (memorizedStates[currentCursor] </span><span style="color:#F97583">===</span><span style="color:#79B8FF"> undefined</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">    memorizedStates[currentCursor] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> initialValue;</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> state</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> memorizedStates[currentCursor];</span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#B392F0"> setState</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">newValue</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">    memorizedStates[currentCursor] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> newValue;</span></span>
+<span class="line"><span style="color:#B392F0">    reRender</span><span style="color:#E1E4E8">(); </span><span style="color:#6A737D">// 触发重新渲染</span></span>
+<span class="line"><span style="color:#E1E4E8">  };</span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#E1E4E8">  cursor</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> [state, setState];</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="useeffect-原理">useEffect 原理</h2>
+<p><code>useEffect</code> 用于处理副作用，它在渲染完成后执行。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="jsx"><code><span class="line"><span style="color:#B392F0">useEffect</span><span style="color:#E1E4E8">(() </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">  // 副作用逻辑</span></span>
+<span class="line"><span style="color:#E1E4E8">  document.title </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> `点击了 ${</span><span style="color:#E1E4E8">count</span><span style="color:#9ECBFF">} 次`</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#6A737D">  // 清理函数</span></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">    document.title </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "React App"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">  };</span></span>
+<span class="line"><span style="color:#E1E4E8">}, [count]); </span><span style="color:#6A737D">// 依赖数组</span></span>
+<span class="line"></span></code></pre>
+<h3 id="关键概念">关键概念</h3>
+<ul>
+<li><strong>依赖数组为空 <code>[]</code></strong>：只在组件挂载时执行一次</li>
+<li><strong>不传依赖数组</strong>：每次渲染后都会执行</li>
+<li><strong>返回清理函数</strong>：在下次 effect 执行前或组件卸载时调用</li>
+</ul>
+<h2 id="usecallback-vs-usememo">useCallback vs useMemo</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Hook</th><th>缓存什么</th><th>使用场景</th></tr></thead><tbody><tr><td><code>useMemo</code></td><td>计算结果</td><td>昂贵的计算</td></tr><tr><td><code>useCallback</code></td><td>函数引用</td><td>传给子组件的回调</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="jsx"><code><span class="line"><span style="color:#6A737D">// useMemo: 缓存计算结果</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> sortedList</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> useMemo</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">  () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> items.</span><span style="color:#B392F0">sort</span><span style="color:#E1E4E8">((</span><span style="color:#FFAB70">a</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">b</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> a.value </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> b.value),</span></span>
+<span class="line"><span style="color:#E1E4E8">  [items]</span></span>
+<span class="line"><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// useCallback: 缓存函数引用</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> handleClick</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> useCallback</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">  (</span><span style="color:#FFAB70">id</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#B392F0">    setSelected</span><span style="color:#E1E4E8">(id);</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">  []</span></span>
+<span class="line"><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span></code></pre>
+<h2 id="hooks-规则">Hooks 规则</h2>
+<ol>
+<li><strong>只在组件顶层调用</strong>，不能在循环、条件或嵌套函数中调用</li>
+<li><strong>只在 React 函数组件或自定义 Hook 中调用</strong></li>
+</ol>
+<blockquote>
+<p>这些规则确保了每次渲染时 Hooks 的调用顺序一致，这是 React 正确关联状态的关键。</p>
+</blockquote>  </div> </article>  </main> <footer class="border-t border-gray-200 dark:border-gray-800 mt-auto"> <div class="max-w-5xl mx-auto px-4 py-8"> <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400"> <p>&copy; 2026 MyWeb — Built with Astro</p> <div class="flex items-center gap-4"> <a href="/dailystudy/blog" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+博客
+</a> <a href="/dailystudy/notes" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+学习笔记
+</a> <a href="/dailystudy/algorithms" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+算法
+</a> </div> </div> </div> </footer> <script>
+      // 暗色模式切换
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.classList.add("dark");
+      }
+    </script> </body> </html>
